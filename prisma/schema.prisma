@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums mapped to existing DB enums
+enum FileType {
+  BUY
+  SELL
+  REMORTGAGE
+  BUY_SELL
+  @@map("CaseType")
+}
+
+enum FileStatus {
+  OPEN
+  CLOSED
+  @@map("CaseStatus")
+}
+
+model Firm {
+  id    String @id @default(cuid())
+  name  String
+  files File[]
+}
+
+model File {
+  id                String     @id @default(cuid())
+  firmId            String
+  firm              Firm       @relation(fields: [firmId], references: [id], onDelete: Cascade)
+  clientDisplayName String
+  clientFirstName   String?
+  clientLastName    String?
+  clientEmail       String?
+  fileRef           String?
+  caseType          FileType   @map("caseType")
+  status            FileStatus @default(OPEN)
+  createdAt         DateTime   @default(now())
+
+  // NEW: Catch-all storage for the Personal Details form
+  clientDetails     Json?
+  transactionDetails Json?
+
+  @@map("Case")
+}
