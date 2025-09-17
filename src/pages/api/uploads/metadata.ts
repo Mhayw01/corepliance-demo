@@ -74,7 +74,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       size,
       mime,
       uploadedAt: new Date().toISOString(),
-      analysis: null               // to be filled by OCR step
+      analysis: {
+        status: "CHECKING",
+        passed: null,
+        reasons: [],
+        docType: null,
+        extracts: {},
+        confidence: 0
+      }
     };
     uploads.push(newItem);
 

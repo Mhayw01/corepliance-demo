@@ -74,11 +74,6 @@ export default function UploadWidget({ fileId, sourceKey, category = null, onUpl
         ref={inputRef}
         className="block w-full text-sm text-gray-700 file:mr-3 file:rounded file:border file:px-3 file:py-1.5 file:text-sm file:bg-white file:border-gray-300 hover:file:bg-gray-50 disabled:opacity-50"
       />
-      {uploading && <p className="text-xs text-gray-500">Saving metadata…</p>}
-      {lastFileName && !error && (
-        <p className="text-xs text-green-700">Saved metadata: {lastFileName}</p>
-      )}
-      {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
 }

@@ -30,6 +30,15 @@ export default function ClientFileDashboard({ file }: Props) {
   const td = (file.transactionDetails ?? {}) as any;
   const answers = td.answers ?? {};
   const derived = td.derived ?? {};
+  const uploads = Array.isArray(td.uploads) ? td.uploads : [];
+  const uploadsCompleted = derived.uploadsCompleted === true;
+  const uploadsHasData = uploads.length > 0;
+  const uploadsStatusText = uploadsCompleted ? "Completed" : uploadsHasData ? "In progress" : "To do";
+  const uploadsStatusClass = uploadsCompleted
+    ? "bg-green-50 border-green-300 text-green-700"
+    : uploadsHasData
+    ? "bg-amber-50 border-amber-300 text-amber-700"
+    : "";
   const txCompleted = derived.transactionCompleted === true;
   const txHasData = Object.keys(answers).length > 0;
   const txStatusText = txCompleted ? "Completed" : txHasData ? "In progress" : "To do";
@@ -79,7 +88,7 @@ export default function ClientFileDashboard({ file }: Props) {
         <Link href={`/client/files/${file.id}/uploads`} className="rounded-xl border bg-white p-5 hover:bg-gray-50 transition">
           <div className="flex items-center justify-between">
             <div className="font-medium">Upload Documents</div>
-            <span className="text-xs rounded-full border px-2 py-1">To do</span>
+            <span className={`text-xs rounded-full border px-2 py-1 ${uploadsStatusClass}`}>{uploadsStatusText}</span>
           </div>
           <p className="text-sm text-gray-600 mt-2">Add the documents we’ll need (proof of ID, address, etc.).</p>
         </Link>

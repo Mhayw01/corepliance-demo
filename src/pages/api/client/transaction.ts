@@ -33,15 +33,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: "payload (object) is required" });
       }
 
-      // Merge with existing JSON (shallow merge of top-level keys)
+      // Merge with existing JSON (deep merge of answers, derived, uploads)
       const current = await prisma.file.findUnique({
         where: { id: fileId },
         select: { transactionDetails: true },
       });
 
+      const prev = (current?.transactionDetails ?? {}) as any;
       const nextJson = {
-        ...(current?.transactionDetails ?? {}),
-        ...payload,
+        answers: { ...(prev.answers || {}), ...(payload.answers || {}) },
+        derived: { ...(prev.derived || {}), ...(payload.derived || {}) },
+        uploads: payload.uploads !== undefined ? payload.uploads : (prev.uploads || []),
       };
 
       const updated = await prisma.file.update({
